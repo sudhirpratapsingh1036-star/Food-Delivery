@@ -11,6 +11,7 @@ export const verifyOwnerJWT = asyncHandler(async (req, _, next) => {
         }
 
         const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+     
 
         const owner = await Owner.findById(decodedToken._id).select("-password -refreshToken");
         if (!owner) {

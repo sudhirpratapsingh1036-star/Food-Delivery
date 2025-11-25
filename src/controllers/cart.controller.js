@@ -4,17 +4,21 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 
-// Add to cart
 const addToCart = asyncHandler(async (req, res) => {
     const { productId, qty } = req.body;
-    if (!(productId || qty)) throw new ApiError(400, "Product ID and quantity are required");
+
+    if (!productId || !qty) {
+        throw new ApiError(400, "Product ID and quantity are required");
+    }
 
     let cart = await Cart.findOne({ user: req.user._id });
+
     if (!cart) {
         cart = await Cart.create({ user: req.user._id, items: [] });
     }
 
-    const index = cart.items.findIndex(item => item.product.toString() === productId);
+    const index = cart.items.findIndex(item => String(item.product) === String(productId));
+
     if (index !== -1) {
         cart.items[index].qty += qty;
     } else {
@@ -23,8 +27,10 @@ const addToCart = asyncHandler(async (req, res) => {
 
     await cart.save();
     cart = await cart.populate("items.product");
+
     res.status(200).json(new ApiResponse(200, cart.items, "Added to cart successfully"));
 });
+
 
 // Get cart
 const getCart = asyncHandler(async (req, res) => {
