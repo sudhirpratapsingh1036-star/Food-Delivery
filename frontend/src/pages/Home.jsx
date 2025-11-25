@@ -34,7 +34,7 @@ const Home = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/products/`);
+                const res = await axios.get(`${import.meta.env.VITE_API_URL}/products`);
                 const fetchedProducts = res.data.data || [];
                 setProducts(fetchedProducts);
                 setFilteredProducts(fetchedProducts);
@@ -52,7 +52,7 @@ const Home = () => {
                 let cartFromBackend = [];
 
                 if (token) {
-                    const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/cart/`, {
+                    const res = await axios.get(`${import.meta.env.VITE_API_URL}/cart`, {
                         headers: { Authorization: `Bearer ${token}` }
                     });
 
